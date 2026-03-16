@@ -41,3 +41,6 @@ models:
     bi:
       +materialized: table
       +schema: bi
+
+vars:
+  transform_batch_no: "{{ run_started_at.strftime('%Y%m%d%H%MS') }}"

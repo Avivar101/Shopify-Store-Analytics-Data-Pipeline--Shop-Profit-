@@ -1,6 +1,31 @@
-with lines as (
-    select *
-    from {{ ref('stg_shopify_order_lines') }}
+{{
+  config(
+    materialized = 'incremental',
+    unique_key = 'order_line_id',
+    incremental_strategy='merge'
+    )
+}}
+
+{% set transform_batch_no = var('transform_batch_no') %}
+
+with changed_orders as (
+    select
+        order_id,
+        updated_at as order_updated_at
+    from {{ ref('stg_shopify_orders') }}
+
+    {% if is_incremental() %}
+      where updated_at >= coalesce((
+        select max(order_updated_at) - interval '1 day' 
+        from {{ this }}), '1900-01-01')
+    {% endif %}
+),
+
+lines as (
+    select l.*
+    from {{ ref('stg_shopify_order_lines') }} l
+    inner join changed_orders co
+        on l.order_id = co.order_id
 ),
 
 orders as (
@@ -9,6 +34,7 @@ orders as (
         order_id,
         customer_id,
         created_at as order_created_at,
+        updated_at as order_updated_at,
         financial_status,
         fulfillment_status,
         currency
@@ -23,6 +49,7 @@ final as (
 
         o.customer_id,
         o.order_created_at,
+        o.order_updated_at,
         o.financial_status,
         o.fulfillment_status,
         o.currency,
@@ -35,7 +62,9 @@ final as (
         l.quantity,
         l.unit_price,
         l.line_discount,
-        l.line_gross_sales
+        l.line_gross_sales,
+
+        '{{ transform_batch_no }}' as transform_batch_no
     from lines l
     left join orders o
         on l.shop_domain = o.shop_domain

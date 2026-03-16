@@ -10,7 +10,8 @@
             "alias": "shopify",
             "type": "file",
             "path": "c:\\Users\\USER\\Documents\\GitHub\\shop_profit\\shopify_ingestion\\shopify.duckdb",
-            "attached": false
+            "readOnly": true,
+            "attached": true
         }
     ],
     "duckdb.defaultDatabase": "shopify"

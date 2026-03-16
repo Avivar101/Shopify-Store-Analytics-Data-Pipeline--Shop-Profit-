@@ -35,3 +35,15 @@ def get_paginated(endpoint, params=None):
         else:
             url = None
     return results
+
+def generate_access_token():
+    url = f"https://{STORE}/admin/oauth/access_token"
+    payload = {
+        "content_type": "application/x-www-form-urlencoded",
+        "grant_type": "client_credentials",
+        "client_id": os.getenv("SHOPIFY_CLIENT_ID"),
+        "client_secret": os.getenv("SHOPIFY_API_SECRET")
+    }
+    response = requests.post(url, json=payload)
+    response.raise_for_status()
+    return response.json().get("access_token")
