@@ -19,7 +19,7 @@ select
     end as average_sales_per_order
 
 from {{ ref('fct_order_lines') }} f
-left join {{ ref('dim_products') }} d
+left join {{ ref('dim_product_variants') }} d
     on f.shop_domain = d.shop_domain
     and f.variant_id = d.variant_id
 
