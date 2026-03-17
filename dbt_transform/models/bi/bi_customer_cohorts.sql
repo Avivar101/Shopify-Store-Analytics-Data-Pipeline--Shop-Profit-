@@ -3,7 +3,7 @@ with first_orders as (
         shop_domain,
         customer_id,
         min(order_created_at) as first_order_at
-    from {{ ref('fct_customer_orders') }}
+    from {{ ref('fct_orders') }}
     where customer_id is not null
     group by 1,2
 )

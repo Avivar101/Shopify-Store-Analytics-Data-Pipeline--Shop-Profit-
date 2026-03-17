@@ -7,7 +7,7 @@ with customer_order_stats as (
         max(order_created_at) as last_order_at,
         sum(total_price) as lifetime_value
     
-    from {{ ref('fct_customer_orders') }}
+    from {{ ref('fct_orders') }}
     where customer_id is not null
     group by 1, 2
 ),

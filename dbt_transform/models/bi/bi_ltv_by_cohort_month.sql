@@ -5,7 +5,7 @@ with customer_orders as (
         o.order_created_at,
         o.total_price,
         c.cohort_month
-    from {{ ref('fct_customer_orders') }} o
+    from {{ ref('fct_orders') }} o
 
     join {{ ref('bi_customer_cohorts') }} c
         on o.customer_id = c.customer_id

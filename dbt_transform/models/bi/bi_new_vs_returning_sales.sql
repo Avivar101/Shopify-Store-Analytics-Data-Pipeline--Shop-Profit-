@@ -6,7 +6,7 @@ with customer_first_order as (
         shop_domain,
         customer_id,
         min(order_created_at) as first_order_at
-    from {{ ref('fct_customer_orders') }}
+    from {{ ref('fct_orders') }}
     where customer_id is not null
     group by 1, 2
 
@@ -27,7 +27,7 @@ orders_labeled as (
             else 'returning'
         end as customer_type
 
-    from {{ ref('fct_customer_orders') }} o
+    from {{ ref('fct_orders') }} o
     join customer_first_order c
       on o.shop_domain = c.shop_domain
      and o.customer_id = c.customer_id
