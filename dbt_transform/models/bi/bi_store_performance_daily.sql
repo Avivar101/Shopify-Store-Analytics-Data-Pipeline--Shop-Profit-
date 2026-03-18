@@ -17,6 +17,6 @@ select
         else sum(line_gross_sales) / count(distinct order_id)
     end as average_order_value
 
-from {{ ref('fct_order_lines') }}
+from {{ ref('fct_order_items') }}
 
 group by 1, 2

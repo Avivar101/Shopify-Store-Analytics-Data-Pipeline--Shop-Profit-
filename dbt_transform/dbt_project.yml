@@ -42,5 +42,9 @@ models:
       +materialized: table
       +schema: bi
 
+snapshots:
+  dbt_transform:
+    +schema: snapshots
+
 vars:
   transform_batch_no: "{{ run_started_at.strftime('%Y%m%d%H%MS') }}"

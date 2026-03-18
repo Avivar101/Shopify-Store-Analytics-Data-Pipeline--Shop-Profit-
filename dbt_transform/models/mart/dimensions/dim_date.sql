@@ -6,7 +6,7 @@
 
 with numbers as (
 
-    select *
+    select cast(n as integer) as n
     from generate_series(0, 4017) as t(n)
 
 ),

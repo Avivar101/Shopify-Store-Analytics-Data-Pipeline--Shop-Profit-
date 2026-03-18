@@ -1,2 +1,126 @@
 version: 2
 
+models:
+    - name: fct_order_items
+      description: "Fact table for order items, containing detailed information about each item in an order."
+      columns:
+        - name: shop_domain
+          description: "Domain of the shop where the order was placed."
+          data_tests:
+            - not_null
+        - name: order_id
+          description: "Unique identifier for each order."
+          data_tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('fct_orders')
+                  field: order_id
+        - name: order_item_id
+          description: "Unique identifier for each order item."
+          data_tests:
+            - not_null
+            - unique
+        - name: product_id
+          description: "Identifier for the product of the order item."
+          data_tests:
+            - relationships:
+                arguments:
+                  to: ref('dim_products')
+                  field: product_id
+        - name: variant_id
+          description: "Identifier for the product variant of the order item."
+          data_tests:
+            - relationships:
+                arguments:
+                  to: ref('dim_product_variants')
+                  field: variant_id
+        - name: customer_id
+          description: "Identifier for the customer who placed the order."
+          data_tests:
+            - relationships:
+                arguments:
+                  to: ref('dim_customers')
+                  field: customer_id
+        - name: order_created_at
+          description: "Timestamp when the order was created."
+    - name: fct_orders
+      description: "Fact table for orders, containing aggregated information about each order."
+      columns:
+        - name: shop_domain
+          description: "Domain of the shop where the order was placed."
+          data_tests:
+            - not_null
+        - name: order_id
+          description: "Unique identifier for each order."
+          data_tests:
+            - not_null
+            - unique
+        - name: customer_id
+          description: "Identifier for the customer who placed the order."
+          data_tests:
+            - relationships:
+                arguments:
+                  to: ref('dim_customers')
+                  field: customer_id
+        - name: order_created_at
+          description: "Timestamp when the order was created."
+          data_tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_date')
+                  field: date_day 
+    - name: dim_product_variants
+      description: "Dimension table for product variants, containing detailed information about each product variant."
+      columns:
+        - name: shop_domain
+          description: "Domain of the shop where the product variant is sold."
+          data_tests:
+            - not_null
+        - name: variant_id
+          description: "Unique identifier for each product variant."
+          data_tests:
+            - not_null
+            - unique
+        - name: product_id
+          description: "Identifier for the product to which the variant belongs."
+        - name: variant_name
+          description: "Name of the product variant."
+    - name: dim_products
+      description: "Dimension table for products, containing detailed information about each product."
+      columns:
+        - name: shop_domain
+          description: "Domain of the shop where the product is sold."
+          data_tests:
+            - not_null
+        - name: product_sk
+          description: "Surrogate key for the product."
+          data_tests:
+            - not_null
+            - unique
+        - name: product_id
+          description: "Unique identifier for each product."
+          data_tests:
+            - not_null
+            - unique
+        - name: product_name
+          description: "Name of the product."
+    - name: dim_date
+      description: "Dimension table for dates, containing detailed information about each date."
+      columns:
+        - name: date_day
+          description: "The actual date."
+          data_tests:
+            - not_null
+            - unique
+        - name: year
+          description: "Year of the date."
+          data_tests:
+            - not_null
+        - name: month
+          description: "Month of the date."
+          data_tests:
+            - not_null
+        - name: day
+          description: "Day of the date."
