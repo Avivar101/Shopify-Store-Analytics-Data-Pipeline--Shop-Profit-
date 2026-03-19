@@ -18,8 +18,12 @@ services:
     container_name: shop_profit_metabase
     ports:
       - "3001:3000"
+    environment:
+      MB_PLUGINS_DIR: /plugins
     volumes:
       - metabase_data:/metabase-data
+      - ./metabase_plugins:/plugins
+      - ./db:/app/db
 
 volumes:
   metabase_data:

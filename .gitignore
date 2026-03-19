@@ -4,6 +4,8 @@ __pycache__/
 build/
 dist/
 wheels/
+dagster_home/
+metabase_plugins/
 *.egg-info
 
 # Virtual environments

@@ -6,7 +6,7 @@ import dagster as dg
 def shopify_ingestion(context: dg.AssetExecutionContext):
     context.log.info("Starting Shopify Ingestion")
     result = subprocess.run(
-        [sys.executable, "ingestion/run_shopify_ingestion.py"],
+        [sys.executable, "-u", "ingestion/run_shopify_ingestion.py"],
         capture_output=True,
         text=True,
     )
@@ -23,7 +23,7 @@ def shopify_ingestion(context: dg.AssetExecutionContext):
 def dbt_build(context: dg.AssetExecutionContext):
     context.log.info("Starting dbt run")
     result = subprocess.run(
-        [sys.executable, "-m", "dbt", "run"],
+        ["uv", "run", "dbt", "run", "--project-dir", "."],
         cwd="dbt_transform",
         capture_output=True,
         text=True,
@@ -41,7 +41,7 @@ def dbt_build(context: dg.AssetExecutionContext):
 def dbt_tests(context: dg.AssetExecutionContext):
     context.log.info("Starting dbt tests")
     result = subprocess.run(
-        [sys.executable, "-m", "dbt", "test"],
+        ["uv", "run", "dbt", "test", "--project-dir", "."],
         cwd="dbt_transform",
         capture_output=True,
         text=True,
