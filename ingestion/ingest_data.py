@@ -1,9 +1,13 @@
 import json
+import os
+from pathlib import Path
+
 import duckdb
-from shopify_client import get_paginated, get_valid_access_token
 from datetime import datetime, timedelta, timezone
 
-DB_PATH = "shopify.duckdb"
+from shopify_client import get_paginated, get_valid_access_token
+
+DB_PATH = Path(os.getenv("DUCKDB_PATH", "db/shopify.duckdb"))
 SHOP_DOMAIN = "okezie-ben-john.myshopify.com"
 
 batch_no = int(datetime.now(timezone.utc).timestamp())
@@ -63,7 +67,7 @@ def update_pipeline_state(
 def ingest_shopify_data(source: str, table_name: str) -> None:
     print(f"Pulling {source}s...")
 
-    con = duckdb.connect(DB_PATH)
+    con = duckdb.connect(str(DB_PATH))
 
     ensure_metadata_objects(con)
     ensure_raw_table(con, source, table_name)
@@ -108,12 +112,7 @@ def ingest_shopify_data(source: str, table_name: str) -> None:
                 max_updated_at_in_batch = item_updated_at_dt
 
     if max_updated_at_in_batch is not None:
-        max_updated_at_in_batch += timedelta(seconds=1)
-        print(f"Updating pipeline state for {source} with last_updated_at: {max_updated_at_in_batch}")
+        max_updated_at_in_batch += timedelta(seconds=10)
         update_pipeline_state(con, source, max_updated_at_in_batch)
             
     con.close()
-
-    # print(f"Ingested {len(data)} {source}s into raw.{table_name}")
-    # print(f"Batch no: {batch_no}")
-    # print(f"Latest updated_at saved: {max_updated_at_in_batch}")

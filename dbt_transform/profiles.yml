@@ -1,0 +1,13 @@
+dbt_transform:
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_PATH') }}"
+      threads: 4
+
+    prod:
+      type: duckdb
+      path: prod.duckdb
+      threads: 4
+
+  target: dev

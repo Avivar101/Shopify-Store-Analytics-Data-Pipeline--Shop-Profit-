@@ -23,7 +23,7 @@ def shopify_ingestion(context: dg.AssetExecutionContext):
 def dbt_build(context: dg.AssetExecutionContext):
     context.log.info("Starting dbt run")
     result = subprocess.run(
-        ["dbt", "run"],
+        [sys.executable, "-m", "dbt", "run"],
         cwd="dbt_transform",
         capture_output=True,
         text=True,
@@ -41,7 +41,7 @@ def dbt_build(context: dg.AssetExecutionContext):
 def dbt_tests(context: dg.AssetExecutionContext):
     context.log.info("Starting dbt tests")
     result = subprocess.run(
-        ["dbt", "test"],
+        [sys.executable, "-m", "dbt", "test"],
         cwd="dbt_transform",
         capture_output=True,
         text=True,
